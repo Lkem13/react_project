@@ -1,21 +1,40 @@
-import React from 'react'
-import {Button, Form} from 'react-bootstrap';
+import { SyntheticEvent, useState } from 'react'
+import {Form, Button} from 'react-bootstrap';
 import FormContainer from '../components/FormContainer';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
+
+  const [email, setEmail] = useState('')
+  const navigate = useNavigate();
+
+  const submitHandler = async (e : SyntheticEvent) => {
+    e.preventDefault()
+    await fetch('https://jsonplaceholder.typicode.com/users',{
+      method: 'POST',
+      body: JSON.stringify({
+        email,
+      }),
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8'
+      },
+    })
+    navigate('/home')
+  }
+
   return (
     <FormContainer>
         <h1>Login</h1>
-    <Form>
+    <Form onSubmit={submitHandler}>
       <Form.Group className="my-3" controlId="email">
         <Form.Label>Email address</Form.Label>
-        <Form.Control type="email" placeholder="Enter your email" />
+        <Form.Control type="email" placeholder="Enter your email" 
+        value = {email}
+        onChange = {(e) => setEmail(e.target.value)}
+        />
       </Form.Group>
 
-      <Form.Group className="my-3" controlId="password">
-        <Form.Label>Password</Form.Label>
-        <Form.Control type="password" placeholder="Password" />
-      </Form.Group>
       <Button variant="primary" type="submit" className="my-3">
         Submit
       </Button>

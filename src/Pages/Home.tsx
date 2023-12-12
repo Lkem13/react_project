@@ -1,9 +1,17 @@
 import React from 'react'
 
-const Home = () => {
-  return (
+interface Props{
+  username: string
+}
+
+const Home = ({username} : Props) => {
+  return username ?(
     <h1>
-        Welcome to the home page
+        Welcome {username}!
+    </h1>
+  ) : (
+    <h1>
+        Welcome to the home page!
     </h1>
   )
 }
