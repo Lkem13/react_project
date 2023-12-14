@@ -7,23 +7,27 @@ import { postAdded } from "./postsSlice";
 const AddPostForm = () => {
     const dispatch = useDispatch()
     const [title, setTitle] = useState('')
-    const [content, setContent] = useState('')
+    const [body, setBody] = useState('')
     
 
     const onTitleChanged = (e: React.ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)
-    const onContentChanged = (e: React.ChangeEvent<HTMLTextAreaElement>) => setContent(e.target.value)
-    const onSavePostClicked = () => {
-        if (title && content){
+    const onBodyChanged = (e: React.ChangeEvent<HTMLTextAreaElement>) => setBody(e.target.value)
+    const onSavePostClicked = async () => {
+        const response = await fetch("https://jsonplaceholder.typicode.com/posts");
+        const posts = await response.json();
+        const nextId = posts.length + 1;
+
+        if (title && body){
             dispatch(
                 postAdded({
-                    id: nanoid(),
+                    id: nextId,
                     title,
-                    content
+                    body
                 })
             )
 
             setTitle('')
-            setContent('')
+            setBody('')
         }
     }
     
@@ -43,8 +47,8 @@ const AddPostForm = () => {
                 <textarea
                     id="postContent"
                     name="postContent"
-                    value={content}
-                    onChange={onContentChanged}/>
+                    value={body}
+                    onChange={onBodyChanged}/>
                 <button type="button" onClick={onSavePostClicked}>Save Post</button>
             </form>
             <br/>

@@ -1,5 +1,5 @@
-import { useSelector } from "react-redux";
-import { selectAllPosts } from "./postsSlice";
+import { useSelector, useDispatch } from "react-redux";
+import { selectAllPosts, postRemoved } from "./postsSlice";
 import { PostsModel } from "./PostsModel";
 
 export interface PostsProp{
@@ -7,17 +7,24 @@ export interface PostsProp{
 }
 
 const PostsList = () => {
+    const dispatch = useDispatch();
     const posts = useSelector(selectAllPosts)
 
-    const renderedPosts = posts ? (
-        posts.map((post) => (
+    // Sort posts by id in descending order
+    const sortedPosts = [...posts].sort((a, b) => b.id - a.id);
+    const handleRemovePost = (postId: number) =>{
+        dispatch(postRemoved(postId));
+    };
+
+    const renderedPosts = sortedPosts.map((post) => (
         <article key={post.id}>
             <h3>{post.title}</h3>
-            <p>{post.content.substring(0, 100)}</p>
+            <p>{post.body ? post.body.substring(0, 100) : "No content available"}</p>
+            <button onClick={() => handleRemovePost(post.id)}>X</button>
         </article>
             
-    ))
-    ) : null;
+    )
+    )
     return(
         <section>
             <h2>Posts</h2>

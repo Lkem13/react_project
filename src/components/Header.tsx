@@ -10,6 +10,9 @@ const Header = () => {
             <Navbar.Brand href="/">BookFace</Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
+              <Nav>
+              <Nav.Link href="/posts">Posts</Nav.Link>
+              </Nav>
             <Nav className="ms-auto">
                 <Nav.Link href="/signup">Sign Up</Nav.Link>
                 <Nav.Link href="/login">Login</Nav.Link>

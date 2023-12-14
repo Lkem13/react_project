@@ -10,6 +10,11 @@ import Login from './Pages/Login';
 import Signup from './Pages/Signup';
 import PostsList from './features/posts/PostsList';
 import AddPostForm from './features/posts/AddPostForm';
+import store from './app/store';
+import { fetchPosts } from './features/posts/postsSlice';
+import Posts from './Pages/Posts';
+
+store.dispatch(fetchPosts());
 
 function App() {
 
@@ -37,9 +42,8 @@ function App() {
           <Route path='/' Component={() => <Home username={username}/>}></Route>
           <Route path='/login' Component={Login}></Route>
           <Route path='/signup' Component={Signup}></Route>
+          <Route path='/posts' Component={Posts}></Route>
           </Routes>
-          <AddPostForm/>
-          <PostsList/>
         </Container>
         
         

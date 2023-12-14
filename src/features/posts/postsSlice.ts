@@ -1,4 +1,4 @@
-import {createSlice} from "@reduxjs/toolkit"
+import {PayloadAction, createAsyncThunk, createSlice} from "@reduxjs/toolkit"
 import { PostsModel } from "./PostsModel";
 
 export interface Posts{
@@ -6,24 +6,40 @@ export interface Posts{
 }
 
 const initialState: Posts = {
-    posts: [
-    {id: 1, title: 'Test1', content: "Test content1"},
-    {id: 2, title: 'Test2', content: "Test content2"},
-    ]
-}
+    posts: [],
+  };
 
-const postsSlice = createSlice({
-    name: 'posts',
+export const fetchPosts = createAsyncThunk("posts/fetchPosts", async () => {
+    const response = await fetch("https://jsonplaceholder.typicode.com/posts");
+    const data = await response.json();
+    return data as PostsModel[];
+  });
+
+  const postsSlice = createSlice({
+    name: "posts",
     initialState,
     reducers: {
-        postAdded(state, action){
-            state.posts.push(action.payload)
+      postAdded: (state, action) => {
+        state.posts.unshift(action.payload);
+      },
+      postRemoved: (state, action: PayloadAction<number>) => {
+        const index = state.posts.findIndex((post) => post.id === action.payload);
+        if (index !== -1) {
+          // Create a new array without the post at the found index
+          state.posts = [...state.posts.slice(0, index), ...state.posts.slice(index + 1)];
         }
-    }
-})
+      },
+    },
+    extraReducers: (builder) => {
+      builder.addCase(fetchPosts.fulfilled, (state, action) => {
+        // Assuming the payload is an array of PostsModel
+        state.posts = action.payload;
+      });
+    },
+  });
 
 export const selectAllPosts = (state: { posts: Posts }) => state.posts.posts;
 
-export const {postAdded} = postsSlice.actions
+export const {postAdded, postRemoved} = postsSlice.actions
 
 export default postsSlice.reducer
