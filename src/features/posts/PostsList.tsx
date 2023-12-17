@@ -1,6 +1,7 @@
 import { useSelector, useDispatch } from "react-redux";
 import { selectAllPosts, postRemoved } from "./postsSlice";
 import { PostsModel } from "./PostsModel";
+import { Link } from "react-router-dom";
 
 export interface PostsProp{
     posts: PostsModel[];
@@ -17,10 +18,11 @@ const PostsList = () => {
     };
 
     const renderedPosts = sortedPosts.map((post) => (
-        <article key={post.id}>
+        <article className="post" key={post.id}>
             <h3>{post.title}</h3>
             <p>{post.body ? post.body.substring(0, 100) : "No content available"}</p>
             <button onClick={() => handleRemovePost(post.id)}>X</button>
+            <Link to={`./${post.id}`}>View</Link>
         </article>
             
     )

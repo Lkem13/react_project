@@ -1,20 +1,18 @@
 import { useEffect, useState } from 'react';
 import './App.css';
-import Header from './components/Header';
-import Footer from './components/Footer';
-import { Container } from 'react-bootstrap';
-
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Home from './Pages/Home';
 import Login from './Pages/Login';
 import Signup from './Pages/Signup';
-import PostsList from './features/posts/PostsList';
-import AddPostForm from './features/posts/AddPostForm';
 import store from './app/store';
 import { fetchPosts } from './features/posts/postsSlice';
 import Posts from './Pages/Posts';
+import Layout from './components/Layout';
+import SelectedPost from './features/posts/SelectedPost';
+import { fetchComments } from './features/comments/commentsSlice';
 
 store.dispatch(fetchPosts());
+store.dispatch(fetchComments());
 
 function App() {
 
@@ -34,22 +32,22 @@ function App() {
   })
 
   return (
-    <Router>
-      <Header/>
-      <main>
-        <Container>
-        <Routes>
-          <Route path='/' Component={() => <Home username={username}/>}></Route>
-          <Route path='/login' Component={Login}></Route>
-          <Route path='/signup' Component={Signup}></Route>
-          <Route path='/posts' Component={Posts}></Route>
-          </Routes>
-        </Container>
-        
-        
-      </main>
-      <Footer/>
-    </Router>
+    <Routes>
+      <Route path="/" element={<Layout />}>
+
+        <Route index element={<Home username={username}/>} />
+
+        <Route path="posts">
+          <Route index element={<Posts />} />
+          <Route path=":postId" element={<SelectedPost />} />
+        </Route>
+
+        <Route path="signup" element={<Signup/>}/>
+
+        <Route path="login" element={<Login/>}/>
+
+      </Route>
+    </Routes>
   );
 }
 

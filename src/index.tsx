@@ -6,7 +6,8 @@ import reportWebVitals from './reportWebVitals';
 import './bootstrap.min.css';
 import { Provider } from 'react-redux';
 import { store } from './app/store';
-
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { fetchPosts } from './features/posts/postsSlice';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -14,7 +15,11 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <App />
+      <Router>
+        <Routes>
+          <Route path="/*" element={<App />} />
+        </Routes>
+      </Router>
     </Provider>
   </React.StrictMode>
 );

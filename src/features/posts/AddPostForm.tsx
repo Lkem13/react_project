@@ -1,34 +1,38 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { nanoid } from "@reduxjs/toolkit";
+import { AppDispatch } from "../../app/store";
 
-import { postAdded } from "./postsSlice";
+
+import { addNewPost, postAdded } from "./postsSlice";
+
+export const useAppDispatch: () => AppDispatch = useDispatch
 
 const AddPostForm = () => {
-    const dispatch = useDispatch()
+    //const dispatch = useDispatch()
+    const dispatch = useAppDispatch();
     const [title, setTitle] = useState('')
     const [body, setBody] = useState('')
     
-
+    const canSave = [title, body,].every(Boolean);
     const onTitleChanged = (e: React.ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)
     const onBodyChanged = (e: React.ChangeEvent<HTMLTextAreaElement>) => setBody(e.target.value)
     const onSavePostClicked = async () => {
-        const response = await fetch("https://jsonplaceholder.typicode.com/posts");
-        const posts = await response.json();
-        const nextId = posts.length + 1;
-
-        if (title && body){
+        if (canSave){
+            try{
             dispatch(
                 postAdded({
-                    id: nextId,
                     title,
                     body
                 })
-            )
-
+                )
             setTitle('')
             setBody('')
+            } catch (err){
+                console.error('Failed to add new post', err)
+            }
+            
         }
+        
     }
     
     return(

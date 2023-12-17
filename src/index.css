@@ -13,12 +13,21 @@ code {
 }
 */
 
-article {
+.post{
   margin: 0.5em 0.5em 0.5em 0;
   border: 1px solid black;
   border-radius: 10px;
   padding: 1em;
   max-width: 700px;
+}
+
+.comment{
+  margin-bottom: 10px; /* Adjust spacing between comments */
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  max-width: 600px;
+  font-size: 14px; /* Adjust the font size to make comments appear smaller */
 }
 
 h1 {
