@@ -10,9 +10,14 @@ import Posts from './Pages/Posts';
 import Layout from './components/Layout';
 import SelectedPost from './features/posts/SelectedPost';
 import { fetchComments } from './features/comments/commentsSlice';
+import { fetchAlbums } from './features/albums/albumsSlice';
+import Albums from './Pages/Albums';
+import { fetchUsers } from './features/users/usersSlice';
 
 store.dispatch(fetchPosts());
 store.dispatch(fetchComments());
+store.dispatch(fetchAlbums());
+store.dispatch(fetchUsers());
 
 function App() {
 
@@ -40,6 +45,10 @@ function App() {
         <Route path="posts">
           <Route index element={<Posts />} />
           <Route path=":postId" element={<SelectedPost />} />
+        </Route>
+
+        <Route path="albums">
+          <Route index element={<Albums />} />
         </Route>
 
         <Route path="signup" element={<Signup/>}/>

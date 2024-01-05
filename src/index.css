@@ -30,6 +30,14 @@ code {
   font-size: 14px; /* Adjust the font size to make comments appear smaller */
 }
 
+.album{
+  margin: 0.5em 0.5em 0.5em 0;
+  border: 1px solid black;
+  border-radius: 10px;
+  padding: 1em;
+  max-width: 700px;
+}
+
 h1 {
   font-size: 3.5rem;
 }

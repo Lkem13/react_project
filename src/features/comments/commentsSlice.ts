@@ -25,7 +25,14 @@ export const fetchComments = createAsyncThunk("comments/fetchComments", async ()
     reducers: {
       commentAdded: (state, action) => {
         action.payload.id = state.comments.length + 1
-        state.comments.push(action.payload);
+        state.comments.unshift(action.payload);
+      },
+      commentRemoved: (state, action: PayloadAction<number>) => {
+        const index = state.comments.findIndex((comment) => comment.id === action.payload);
+        if (index !== -1) {
+          // Create a new array without the post at the found index
+          state.comments = [...state.comments.slice(0, index), ...state.comments.slice(index + 1)];
+        }
       },
     },
     extraReducers: (builder) => {
@@ -49,6 +56,6 @@ export const selectAllComments = (state: { comments: Comments }) => state.commen
 export const selectCommentById = (state: { comments: Comments }, postId: number) =>
   state.comments.comments.find(comment => comment.postId === postId);
 
-export const {commentAdded} = commentsSlice.actions
+export const {commentAdded, commentRemoved} = commentsSlice.actions
 
 export default commentsSlice.reducer
