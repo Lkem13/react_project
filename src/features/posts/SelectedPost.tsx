@@ -4,6 +4,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Comments, commentAdded, commentRemoved, selectAllComments, selectCommentById } from "../comments/commentsSlice";
 import { AppDispatch } from "../../app/store";
 import { useState } from "react";
+import { selectAllUsers, selectUserById } from "../users/usersSlice";
+import { UsersModel } from "../users/UsersModel";
 export const useAppDispatch: () => AppDispatch = useDispatch
 
 const SelectedPost = () => {
@@ -14,7 +16,7 @@ const SelectedPost = () => {
     
     const post = useSelector((state: { posts: Posts }) => selectPostById(state, Number(postId)))
     //const comment = useSelector((state: { comments: Comments }) => selectCommentById(state, Number(postId)))
-    
+    const users = useSelector(selectAllUsers)
     const allComments = useSelector((state: { comments: Comments }) =>
     selectAllComments(state)
   );
@@ -61,12 +63,13 @@ const SelectedPost = () => {
       const handleRemoveComment = (id: number) =>{
         dispatch(commentRemoved(id));
     };
-
+    const user: UsersModel | undefined = selectUserById(users, post.userId);
     return(
         <>
         <button onClick={handleReturn}>Return</button>
         <article className="post">
-            <h2>{post.title}</h2>
+            <h4>{user?.username}:</h4>
+            <h5>{post.title}</h5>
             <p>{post.body}</p>
         </article>
         <section>

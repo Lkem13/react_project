@@ -4,6 +4,8 @@ import { AlbumsModel } from "./AlbumsModel";
 import { UsersModel } from "../users/UsersModel";
 import { albumRemoved, selectAllAlbums } from "./albumsSlice";
 import { Users, selectAllUsers, selectUserById } from "../users/usersSlice";
+import { PhotosModel } from "../photos/PhotosModel";
+import { selectAllPhotos, selectPhotoById } from "../photos/photosSlice";
 
 export interface AlbumsProp{
     albums: AlbumsModel[];
@@ -13,10 +15,12 @@ export interface UsersProp{
     users: UsersModel[];
 }
 
+
 const AlbumsList = () => {
     const dispatch = useDispatch();
     const albums = useSelector(selectAllAlbums)
     const users = useSelector(selectAllUsers)
+    const photos = useSelector(selectAllPhotos)
     // Sort albums by id in descending order
     const sortedAlbums = [...albums].sort((a, b) => b.id - a.id);
     const handleRemoveAlbum = (id: number) =>{
@@ -26,11 +30,10 @@ const AlbumsList = () => {
     const renderedAlbums = sortedAlbums.map((album) => {
         // Find the user associated with the album
         const user: UsersModel | undefined = selectUserById(users, album.userId);
-    
+
         return (
           <article className="album" key={album.id}>
             <h3>Title: {album.title ? album.title.substring(0, 100) : "No content available"}</h3>
-            {/* Display email from the associated user */}
             <p>Creator: {user?.email}</p>
             <button onClick={() => handleRemoveAlbum(album.id)}>X</button> /
             <Link to={`./${album.id}`}> View </Link>

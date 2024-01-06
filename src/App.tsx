@@ -13,11 +13,14 @@ import { fetchComments } from './features/comments/commentsSlice';
 import { fetchAlbums } from './features/albums/albumsSlice';
 import Albums from './Pages/Albums';
 import { fetchUsers } from './features/users/usersSlice';
+import { fetchPhotos } from './features/photos/photosSlice';
+import SelectedAlbum from './features/albums/SelectedAlbum';
 
 store.dispatch(fetchPosts());
 store.dispatch(fetchComments());
 store.dispatch(fetchAlbums());
 store.dispatch(fetchUsers());
+store.dispatch(fetchPhotos());
 
 function App() {
 
@@ -49,6 +52,7 @@ function App() {
 
         <Route path="albums">
           <Route index element={<Albums />} />
+          <Route path=":albumId" element={<SelectedAlbum />} />
         </Route>
 
         <Route path="signup" element={<Signup/>}/>

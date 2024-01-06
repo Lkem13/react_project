@@ -19,6 +19,7 @@ const AddPostForm = () => {
     const onSavePostClicked = async () => {
         if (canSave){
             try{
+               // dispatch(addNewPost({title, body}))
             dispatch(
                 postAdded({
                     title,

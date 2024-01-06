@@ -49,3 +49,38 @@ p {
   margin: 0.5em 0;
 }
 
+
+.section {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.photo {
+  position: relative;
+  width: 100%;
+}
+
+.photo img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.remove-button {
+  position: absolute;
+  top: 8px;
+  left: 8px; /* Changed to left corner */
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.remove-button:hover {
+  background-color: #c0392b;
+}
+
