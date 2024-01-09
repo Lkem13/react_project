@@ -19,7 +19,9 @@ const Header = () => {
     <header className="Header">
       <Navbar bg='dark' variant='dark' expand="lg" collapseOnSelect>
           <Container>
-              <Navbar.Brand href="/">BookFace</Navbar.Brand>
+              <Navbar.Brand>
+                <Link to="/" className="nav-link">BookFace</Link>
+              </Navbar.Brand>
               <Navbar.Toggle aria-controls="basic-navbar-nav" />
               <Navbar.Collapse id="basic-navbar-nav">
                 
@@ -27,7 +29,6 @@ const Header = () => {
                   currentUser != null ? (
                   <>
                     <Nav>
-                      <Link to="posts" className="nav-link">Posts</Link>
                       <Link to="albums" className="nav-link">Albums</Link>
                     </Nav>
                     <Nav className="ms-auto">
@@ -51,7 +52,4 @@ const Header = () => {
 }
 
 export default Header
-function dispatch(arg0: any) {
-  throw new Error('Function not implemented.');
-}
 

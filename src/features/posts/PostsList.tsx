@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { UsersModel } from "../users/UsersModel";
 import { selectAllUsers, selectUserById } from "../users/usersSlice";
 import { selectCurrentUser } from "../users/currentUserSlice";
+import { deleteComments } from "../comments/commentsSlice";
 
 export interface PostsProp{
     posts: PostsModel[];
@@ -17,6 +18,7 @@ const PostsList = () => {
     const currentUser = useSelector(selectCurrentUser);
     const handleRemovePost = (postId: number) =>{
         dispatch(deletePost(postId) as any);
+        dispatch(deleteComments(postId) as any);
     };
 
     const renderedPosts = posts.map((post) => {
@@ -32,7 +34,7 @@ const PostsList = () => {
             <h4>{user?.username}:</h4>
             <h5>{post.title}</h5>
             <p>{post.body ? post.body.substring(0, 100) : "No content available"}</p>
-            <Link to={`./${post.id}`}> View </Link>
+            <Link to={`./posts/${post.id}`}> View </Link>
         </article>
             
     )}

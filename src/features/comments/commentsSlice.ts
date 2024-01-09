@@ -29,6 +29,12 @@ export const fetchComments = createAsyncThunk("comments/fetchComments", async ()
     return id;
   });
 
+  export const deleteComments = createAsyncThunk('comments/deleteComments', async (id: number) => {
+    await axios.delete(`https://jsonplaceholder.typicode.com/comments/${id}`);
+    return id;
+  });
+
+
   const commentsSlice = createSlice({
     name: "comments",
     initialState,
@@ -54,6 +60,10 @@ export const fetchComments = createAsyncThunk("comments/fetchComments", async ()
         builder.addCase(deleteComment.fulfilled, (state, action) => {
           const deletedCommentId = action.payload;
           state.comments = state.comments.filter((comment) => comment.id !== deletedCommentId);
+        });
+        builder.addCase(deleteComments.fulfilled, (state, action) => {
+          const deleteComments = action.payload;
+          state.comments = state.comments.filter((comment) => comment.postId !== deleteComments);
         });
     },
   });

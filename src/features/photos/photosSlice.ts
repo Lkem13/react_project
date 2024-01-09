@@ -19,12 +19,17 @@ export const fetchPhotos = createAsyncThunk("photos/fetchPhotos", async () => {
     return response.data
   });
 
-  export const addNewPhoto = createAsyncThunk('photos/addNewPhoto', async (initialPhoto: { title: string}) => {
+  export const addNewPhoto = createAsyncThunk('photos/addNewPhoto', async (initialPhoto: { albumId: number, title: string, url: string}) => {
     const response = await axios.post("https://jsonplaceholder.typicode.com/photos", initialPhoto)
     return response.data
 })
 
 export const deletePhoto = createAsyncThunk('photos/deletePhoto', async (id: number) => {
+  await axios.delete(`https://jsonplaceholder.typicode.com/photos/${id}`);
+  return id;
+});
+
+export const deletePhotos = createAsyncThunk('photos/deletePhotos', async (id: number) => {
   await axios.delete(`https://jsonplaceholder.typicode.com/photos/${id}`);
   return id;
 });
@@ -66,6 +71,10 @@ export const deletePhoto = createAsyncThunk('photos/deletePhoto', async (id: num
         builder.addCase(deletePhoto.fulfilled, (state, action) => {
           const deletedPhotoId = action.payload;
           state.photos = state.photos.filter((photo) => photo.id !== deletedPhotoId);
+        });
+        builder.addCase(deletePhotos.fulfilled, (state, action) => {
+          const deletePhotosAlbum = action.payload;
+          state.photos = state.photos.filter((photos) => photos.albumId !== deletePhotosAlbum);
         });
     },
   });

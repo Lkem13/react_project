@@ -4,7 +4,7 @@ import { AlbumsModel } from "./AlbumsModel";
 import { UsersModel } from "../users/UsersModel";
 import { deleteAlbum, selectAllAlbums } from "./albumsSlice";
 import { selectAllUsers, selectUserById } from "../users/usersSlice";
-import { selectAllPhotos, selectPhotoById } from "../photos/photosSlice";
+import { deletePhotos, selectAllPhotos, selectPhotoById } from "../photos/photosSlice";
 import { selectCurrentUser } from "../users/currentUserSlice";
 
 export interface AlbumsProp{
@@ -23,6 +23,7 @@ const AlbumsList = () => {
     const currentUser = useSelector(selectCurrentUser);
     const handleRemoveAlbum = (albumId: number) =>{
         dispatch(deleteAlbum(albumId) as any);
+        dispatch(deletePhotos(albumId) as any);
     };
 
     const renderedAlbums = albums.map((album) => {
