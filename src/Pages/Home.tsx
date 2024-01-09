@@ -1,17 +1,15 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
+import { selectCurrentUser } from '../features/users/currentUserSlice';
+import { AppDispatch } from '../app/store';
 
-interface Props{
-  username: string
-}
+const Home = () => {
+  const currentUser = useSelector(selectCurrentUser);
 
-const Home = ({username} : Props) => {
-  return username ?(
+  console.log(currentUser);
+  return(
     <h1>
-        Welcome {username}!
-    </h1>
-  ) : (
-    <h1>
-        Welcome to the home page!
+     {currentUser ? `Welcome ${currentUser.username}!` : 'Welcome to the home page!'} 
     </h1>
   )
 }

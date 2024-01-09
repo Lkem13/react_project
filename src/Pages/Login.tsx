@@ -2,44 +2,55 @@ import { SyntheticEvent, useState } from 'react'
 import {Form, Button} from 'react-bootstrap';
 import FormContainer from '../components/FormContainer';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch } from '../app/store';
+import { selectAllUsers } from '../features/users/usersSlice';
+import { loginUser } from '../features/users/currentUserSlice';
 
 const Login = () => {
 
   const [email, setEmail] = useState('')
   const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
+  const [loginState, setLoginState] = useState('')
+  const users = useSelector(selectAllUsers);
+  const canSave = [email].every(Boolean);
+  const onEmailChanged = (e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)
 
-  const submitHandler = async (e : SyntheticEvent) => {
-    e.preventDefault()
-    await fetch('https://jsonplaceholder.typicode.com/users',{
-      method: 'POST',
-      body: JSON.stringify({
-        email,
-      }),
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json; charset=UTF-8'
-      },
-    })
-    navigate('/home')
-  }
+  const handleLogin = (e : SyntheticEvent) => {
+     // Prevent the default behavior of the submit event (e.g., page reload)
+  e.preventDefault();
+    const user = users.find((user) => user.email === email);
+    if (canSave && user !== undefined) {
+      try {
+        dispatch(loginUser(user));
+        setEmail('');
+        setLoginState('');
+        navigate('/')
+      } catch (err) {
+        console.error('Failed to login', err);
+      }
+    }else{
+      setLoginState('Failed to login');
+    }
+  };
 
   return (
-    <FormContainer>
-        <h1>Login</h1>
-    <Form onSubmit={submitHandler}>
-      <Form.Group className="my-3" controlId="email">
-        <Form.Label>Email address</Form.Label>
-        <Form.Control type="email" placeholder="Enter your email" 
-        value = {email}
-        onChange = {(e) => setEmail(e.target.value)}
-        />
-      </Form.Group>
-
-      <Button variant="primary" type="submit" className="my-3">
-        Submit
-      </Button>
-    </Form>
-    </FormContainer>
+    <section>
+            <br/>
+            <h2>Login</h2>
+            <form>
+                <label htmlFor="email">Email address:</label>
+                <input
+                    type="text"
+                    id="email"
+                    name="email"
+                    value={email}
+                    onChange={onEmailChanged}/>
+                <button className="submit" type="button" onClick={handleLogin}>Login</button>
+            </form>
+            <br/>
+        </section>
   )
 }
 

@@ -1,12 +1,12 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { Comments, commentAdded, commentRemoved, selectAllComments, selectCommentById } from "../comments/commentsSlice";
 import { AppDispatch } from "../../app/store";
 import { useState } from "react";
 import { Albums, selectAlbumById } from "./albumsSlice";
 import { Photos, photoRemoved, selectAllPhotos } from "../photos/photosSlice";
 import { UsersModel } from "../users/UsersModel";
 import { selectAllUsers, selectUserById } from "../users/usersSlice";
+import { selectCurrentUser } from "../users/currentUserSlice";
 
 export const useAppDispatch: () => AppDispatch = useDispatch
 
@@ -15,7 +15,7 @@ const SelectedAlbum = () => {
     //id
     const {albumId} = useParams()
     const users = useSelector(selectAllUsers)
-    
+    const currentUser = useSelector(selectCurrentUser);
     const dispatch = useAppDispatch();
     
     const album = useSelector((state: { albums: Albums }) => selectAlbumById(state, Number(albumId)))
@@ -45,9 +45,14 @@ const SelectedAlbum = () => {
 
       const renderedPhotos = albumPhotos.map((photo) => (
         <div className="photo" key={photo.id}>
-          <button className="remove-button" onClick={() => handleRemovePhoto(photo.id)}>
-            X
-          </button>
+          
+          {
+            currentUser?.id === album.userId && (
+              <button className="delete" onClick={() => handleRemovePhoto(photo.id)}>
+              X
+            </button>
+                )
+           }
           <img className="" src={photo.url} alt={photo.title}></img>
         </div>
       ));
@@ -60,11 +65,12 @@ const SelectedAlbum = () => {
 
     return(
         <>
-        <button onClick={handleReturn}>Return</button>
+        <button className="return" onClick={handleReturn}>Return</button>
         <article className="album">
             <h2>{album.title}</h2>
             <p>{user?.email}</p>
         </article>
+        <br/>
         <section className="section">
             {renderedPhotos}
         </section>

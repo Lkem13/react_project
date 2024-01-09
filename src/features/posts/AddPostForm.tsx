@@ -1,40 +1,34 @@
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../app/store";
 
 
-import { addNewPost, postAdded } from "./postsSlice";
+import { addNewPost } from "./postsSlice";
+import { selectCurrentUser } from "../users/currentUserSlice";
 
 export const useAppDispatch: () => AppDispatch = useDispatch
 
 const AddPostForm = () => {
-    //const dispatch = useDispatch()
     const dispatch = useAppDispatch();
+    const currentUser = useSelector(selectCurrentUser);
     const [title, setTitle] = useState('')
     const [body, setBody] = useState('')
-    
     const canSave = [title, body,].every(Boolean);
     const onTitleChanged = (e: React.ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)
     const onBodyChanged = (e: React.ChangeEvent<HTMLTextAreaElement>) => setBody(e.target.value)
+
     const onSavePostClicked = async () => {
-        if (canSave){
-            try{
-               // dispatch(addNewPost({title, body}))
-            dispatch(
-                postAdded({
-                    title,
-                    body
-                })
-                )
-            setTitle('')
-            setBody('')
-            } catch (err){
-                console.error('Failed to add new post', err)
-            }
-            
+        if (canSave) {
+          try {
+            await dispatch(addNewPost({userId: currentUser?.id || 0, title: title, body: body }));
+            setTitle('');
+            setBody('');
+          } catch (err) {
+            console.error('Failed to add new post', err);
+          }
         }
-        
-    }
+      };
+      
     
     return(
         <section>
@@ -54,7 +48,7 @@ const AddPostForm = () => {
                     name="postContent"
                     value={body}
                     onChange={onBodyChanged}/>
-                <button type="button" onClick={onSavePostClicked}>Save Post</button>
+                <button className="submit" type="button" onClick={onSavePostClicked}>Save Post</button>
             </form>
             <br/>
         </section>

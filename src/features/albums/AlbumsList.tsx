@@ -2,10 +2,10 @@ import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { AlbumsModel } from "./AlbumsModel";
 import { UsersModel } from "../users/UsersModel";
-import { albumRemoved, selectAllAlbums } from "./albumsSlice";
-import { Users, selectAllUsers, selectUserById } from "../users/usersSlice";
-import { PhotosModel } from "../photos/PhotosModel";
+import { deleteAlbum, selectAllAlbums } from "./albumsSlice";
+import { selectAllUsers, selectUserById } from "../users/usersSlice";
 import { selectAllPhotos, selectPhotoById } from "../photos/photosSlice";
+import { selectCurrentUser } from "../users/currentUserSlice";
 
 export interface AlbumsProp{
     albums: AlbumsModel[];
@@ -20,22 +20,24 @@ const AlbumsList = () => {
     const dispatch = useDispatch();
     const albums = useSelector(selectAllAlbums)
     const users = useSelector(selectAllUsers)
-    const photos = useSelector(selectAllPhotos)
-    // Sort albums by id in descending order
-    const sortedAlbums = [...albums].sort((a, b) => b.id - a.id);
-    const handleRemoveAlbum = (id: number) =>{
-        dispatch(albumRemoved(id));
+    const currentUser = useSelector(selectCurrentUser);
+    const handleRemoveAlbum = (albumId: number) =>{
+        dispatch(deleteAlbum(albumId) as any);
     };
 
-    const renderedAlbums = sortedAlbums.map((album) => {
+    const renderedAlbums = albums.map((album) => {
         // Find the user associated with the album
         const user: UsersModel | undefined = selectUserById(users, album.userId);
 
         return (
           <article className="album" key={album.id}>
+            {
+                currentUser?.id === album.userId && (
+                    <button className="delete" onClick={() => handleRemoveAlbum(album.id)}>X</button>
+                )
+            }
             <h3>Title: {album.title ? album.title.substring(0, 100) : "No content available"}</h3>
             <p>Creator: {user?.email}</p>
-            <button onClick={() => handleRemoveAlbum(album.id)}>X</button> /
             <Link to={`./${album.id}`}> View </Link>
           </article>
         );

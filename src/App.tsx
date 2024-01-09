@@ -24,26 +24,12 @@ store.dispatch(fetchPhotos());
 
 function App() {
 
-  const [username, setUserName] = useState('')
-
-  useEffect(() =>{
-    ;(async() => {
-      const response = await fetch('https://jsonplaceholder.typicode.com/users',{
-        credentials: 'include',
-        headers: {
-        'Content-Type': 'application/json; charset=UTF-8'
-      },
-        })
-        const data = await response.json()
-        setUserName(data.username)
-      })()
-  })
 
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
 
-        <Route index element={<Home username={username}/>} />
+        <Route index element={<Home/>} />
 
         <Route path="posts">
           <Route index element={<Posts />} />

@@ -1,11 +1,12 @@
 import { useDispatch, useSelector } from "react-redux";
 import { Posts, selectPostById } from "./postsSlice";
 import { useNavigate, useParams } from "react-router-dom";
-import { Comments, commentAdded, commentRemoved, selectAllComments, selectCommentById } from "../comments/commentsSlice";
+import { Comments, addNewComment, deleteComment, selectAllComments} from "../comments/commentsSlice";
 import { AppDispatch } from "../../app/store";
 import { useState } from "react";
 import { selectAllUsers, selectUserById } from "../users/usersSlice";
 import { UsersModel } from "../users/UsersModel";
+import { selectCurrentUser } from "../users/currentUserSlice";
 export const useAppDispatch: () => AppDispatch = useDispatch
 
 const SelectedPost = () => {
@@ -17,6 +18,7 @@ const SelectedPost = () => {
     const post = useSelector((state: { posts: Posts }) => selectPostById(state, Number(postId)))
     //const comment = useSelector((state: { comments: Comments }) => selectCommentById(state, Number(postId)))
     const users = useSelector(selectAllUsers)
+    const currentUser = useSelector(selectCurrentUser);
     const allComments = useSelector((state: { comments: Comments }) =>
     selectAllComments(state)
   );
@@ -46,27 +48,26 @@ const SelectedPost = () => {
         <article className="comment" key={comment.id}>
           <h5>{comment.email}</h5>
           <p>{comment.body}</p>
-          <button onClick={() => handleRemoveComment(comment.id)}>X</button>
+          {
+            currentUser?.email === comment.email && (
+                <button className="delete" onClick={() => handleRemoveComment(comment.id)}>X</button>
+                )
+           }
         </article>
       ));
 
-      const handleComment = () => {
-        dispatch(
-            commentAdded({
-                postId: post.id,
-                email: 'test@test.test',
-                body: commentBody
-            })
-            )
+      const handleComment = async () => {
+            await dispatch(addNewComment({email: currentUser?.email || 'Guest', postId: post.id, body: commentBody}));
+            setCommentBody('');
       }
 
-      const handleRemoveComment = (id: number) =>{
-        dispatch(commentRemoved(id));
+      const handleRemoveComment = (commentId: number) =>{
+        dispatch(deleteComment(commentId));
     };
     const user: UsersModel | undefined = selectUserById(users, post.userId);
     return(
         <>
-        <button onClick={handleReturn}>Return</button>
+        <button className="return" onClick={handleReturn}>Return</button>
         <article className="post">
             <h4>{user?.username}:</h4>
             <h5>{post.title}</h5>
@@ -82,7 +83,7 @@ const SelectedPost = () => {
                     name="commentContent"
                     value={commentBody}
                     onChange={onCommentBodyChanged}/>
-                <button type="button" onClick={handleComment}>Submit</button>
+                <button className="submit" type="button" onClick={handleComment}>Submit</button>
             </form>
             <br/>
         </section>

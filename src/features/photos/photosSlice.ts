@@ -19,6 +19,16 @@ export const fetchPhotos = createAsyncThunk("photos/fetchPhotos", async () => {
     return response.data
   });
 
+  export const addNewPhoto = createAsyncThunk('photos/addNewPhoto', async (initialPhoto: { title: string}) => {
+    const response = await axios.post("https://jsonplaceholder.typicode.com/photos", initialPhoto)
+    return response.data
+})
+
+export const deletePhoto = createAsyncThunk('photos/deletePhoto', async (id: number) => {
+  await axios.delete(`https://jsonplaceholder.typicode.com/photos/${id}`);
+  return id;
+});
+
   const photosSlice = createSlice({
     name: "photos",
     initialState,
@@ -47,6 +57,15 @@ export const fetchPhotos = createAsyncThunk("photos/fetchPhotos", async () => {
         builder.addCase(fetchPhotos.rejected, (state, action) => {
             state.status = 'failed'
             state.error = action.error.message || 'Error fetching'
+        });
+        builder.addCase(addNewPhoto.fulfilled, (state, action) => { 
+          const newPhoto = action.payload;
+          newPhoto.id = state.photos.length + 1;
+          state.photos.unshift(newPhoto);
+        });
+        builder.addCase(deletePhoto.fulfilled, (state, action) => {
+          const deletedPhotoId = action.payload;
+          state.photos = state.photos.filter((photo) => photo.id !== deletedPhotoId);
         });
     },
   });

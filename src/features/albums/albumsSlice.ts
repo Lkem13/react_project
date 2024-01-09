@@ -19,27 +19,20 @@ export const fetchAlbums = createAsyncThunk("albums/fetchAlbums", async () => {
     return response.data
   });
 
-  export const addNewAlbum = createAsyncThunk('albums/addNewAlbum', async (initialAlbum) => {
+  export const addNewAlbum = createAsyncThunk('albums/addNewAlbum', async (initialAlbum: {userId: number, title: string}) => {
     const response = await axios.post("https://jsonplaceholder.typicode.com/albums", initialAlbum)
     return response.data
 })
 
+export const deleteAlbum = createAsyncThunk('albums/deleteAlbum', async (id: number) => {
+  await axios.delete(`https://jsonplaceholder.typicode.com/albums/${id}`);
+  return id;
+});
+
   const albumsSlice = createSlice({
     name: "albums",
     initialState,
-    reducers: {
-      albumAdded: (state, action) => {
-        action.payload.id = state.albums.length + 1
-        state.albums.unshift(action.payload);
-      },
-      albumRemoved: (state, action: PayloadAction<number>) => {
-        const index = state.albums.findIndex((album) => album.id === action.payload);
-        if (index !== -1) {
-          // Create a new array without the post at the found index
-          state.albums = [...state.albums.slice(0, index), ...state.albums.slice(index + 1)];
-        }
-      },
-    },
+    reducers: {},
     extraReducers: (builder) => {
         builder.addCase(fetchAlbums.fulfilled, (state, action) => {
         state.status = 'succeeded'
@@ -55,10 +48,14 @@ export const fetchAlbums = createAsyncThunk("albums/fetchAlbums", async () => {
             state.status = 'failed'
             state.error = action.error.message || 'Error fetching'
         })
-        builder.addCase(addNewAlbum.fulfilled, (state, action) => {
-            action.payload.id = [(state.albums.length - 1) + 1]
-            console.log(action.payload)
-            state.albums.push(action.payload)
+        builder.addCase(addNewAlbum.fulfilled, (state, action) => { 
+          const newAlbum = action.payload;
+          newAlbum.id = state.albums.length + 1;
+          state.albums.unshift(newAlbum);
+        });
+        builder.addCase(deleteAlbum.fulfilled, (state, action) => {
+          const deletedAlbumId = action.payload;
+          state.albums = state.albums.filter((album) => album.id !== deletedAlbumId);
         });
     },
   });
@@ -68,6 +65,6 @@ export const selectAllAlbums = (state: { albums: Albums }) => state.albums.album
 export const selectAlbumById = (state: { albums: Albums }, id: number) =>
   state.albums.albums.find(album => album.id === id);
 
-export const {albumAdded, albumRemoved} = albumsSlice.actions
+export const {} = albumsSlice.actions
 
 export default albumsSlice.reducer

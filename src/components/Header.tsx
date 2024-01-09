@@ -1,9 +1,20 @@
 import React from 'react'
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import {Navbar, Nav, Container} from 'react-bootstrap';
+import { useDispatch, useSelector } from 'react-redux';
+import { logoutUser, selectCurrentUser } from '../features/users/currentUserSlice';
 
 
 const Header = () => {
+  const currentUser = useSelector(selectCurrentUser);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  
+  const handleLogout = () => {
+    dispatch(logoutUser());
+    navigate('/')
+  };
+
   return (
     <header className="Header">
       <Navbar bg='dark' variant='dark' expand="lg" collapseOnSelect>
@@ -11,15 +22,27 @@ const Header = () => {
               <Navbar.Brand href="/">BookFace</Navbar.Brand>
               <Navbar.Toggle aria-controls="basic-navbar-nav" />
               <Navbar.Collapse id="basic-navbar-nav">
-                <Nav>
-                <Link to ="posts" className="nav-link">Posts</Link>
-                <Link to ="albums" className="nav-link">Albums</Link>
-                  
-                </Nav>
-              <Nav className="ms-auto">
-                  <Nav.Link href="/signup">Sign Up</Nav.Link>
-                  <Nav.Link href="/login">Login</Nav.Link>
-              </Nav>
+                
+                {
+                  currentUser != null ? (
+                  <>
+                    <Nav>
+                      <Link to="posts" className="nav-link">Posts</Link>
+                      <Link to="albums" className="nav-link">Albums</Link>
+                    </Nav>
+                    <Nav className="ms-auto">
+                      <button className="nav-link" onClick={handleLogout}>Logout</button>
+                    </Nav>
+                  </>
+                  ) : (
+                  <>
+                    <Nav className="ms-auto">
+                      <Link to ="signup" className="nav-link">Sign Up</Link>
+                      <Link to ="login" className="nav-link">Login</Link>
+                    </Nav>
+                </>
+                  )
+                }
               </Navbar.Collapse>
           </Container>
       </Navbar>
@@ -28,3 +51,7 @@ const Header = () => {
 }
 
 export default Header
+function dispatch(arg0: any) {
+  throw new Error('Function not implemented.');
+}
+

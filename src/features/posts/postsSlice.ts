@@ -1,6 +1,9 @@
 import {PayloadAction, createAsyncThunk, createSlice} from "@reduxjs/toolkit"
 import { PostsModel } from "./PostsModel";
 import axios from "axios";
+import { useSelector } from "react-redux";
+import { selectCurrentUser } from "../users/currentUserSlice";
+import { UsersModel } from "../users/UsersModel";
 
 export interface Posts{
     posts: PostsModel[];
@@ -19,19 +22,21 @@ export const fetchPosts = createAsyncThunk("posts/fetchPosts", async () => {
     return response.data
   });
 
-  export const addNewPost = createAsyncThunk('posts/addNewPost', async (initialPost) => {
-    const response = await axios.post("https://jsonplaceholder.typicode.com/posts", initialPost)
-    return response.data
-})
+export const addNewPost = createAsyncThunk('posts/addNewPost', async (initialPost: { userId: number, title: string, body: string }) => {
+  const response = await axios.post("https://jsonplaceholder.typicode.com/posts", initialPost);
+  return response.data;
+});
+
+export const deletePost = createAsyncThunk('posts/deletePost', async (id: number) => {
+    await axios.delete(`https://jsonplaceholder.typicode.com/posts/${id}`);
+    return id;
+});
+
 
   const postsSlice = createSlice({
     name: "posts",
     initialState,
     reducers: {
-      postAdded: (state, action) => {
-        action.payload.id = state.posts.length + 1
-        state.posts.unshift(action.payload);
-      },
       postRemoved: (state, action: PayloadAction<number>) => {
         const index = state.posts.findIndex((post) => post.id === action.payload);
         if (index !== -1) {
@@ -43,8 +48,6 @@ export const fetchPosts = createAsyncThunk("posts/fetchPosts", async () => {
     extraReducers: (builder) => {
         builder.addCase(fetchPosts.fulfilled, (state, action) => {
         state.status = 'succeeded'
-        // Assuming the payload is an array of PostsModel
-        //state.posts = action.payload;
         const loadPosts = action.payload
         state.posts = state.posts.concat(loadPosts)
         })
@@ -55,10 +58,14 @@ export const fetchPosts = createAsyncThunk("posts/fetchPosts", async () => {
             state.status = 'failed'
             state.error = action.error.message || 'Error fetching'
         })
-        builder.addCase(addNewPost.fulfilled, (state, action) => {
-            action.payload.id = [(state.posts.length - 1) + 1]
-            console.log(action.payload)
-            state.posts.push(action.payload)
+        builder.addCase(addNewPost.fulfilled, (state, action) => { 
+          const newPost = action.payload;
+          newPost.id = state.posts.length + 1;
+          state.posts.unshift(newPost);
+        });
+        builder.addCase(deletePost.fulfilled, (state, action) => {
+          const deletedPostId = action.payload;
+          state.posts = state.posts.filter((post) => post.id !== deletedPostId);
         });
     },
   });
@@ -68,6 +75,6 @@ export const selectAllPosts = (state: { posts: Posts }) => state.posts.posts;
 export const selectPostById = (state: { posts: Posts }, postId: number) =>
   state.posts.posts.find(post => post.id === postId);
 
-export const {postAdded, postRemoved} = postsSlice.actions
+export const {postRemoved} = postsSlice.actions
 
 export default postsSlice.reducer

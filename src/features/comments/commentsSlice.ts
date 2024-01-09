@@ -19,22 +19,20 @@ export const fetchComments = createAsyncThunk("comments/fetchComments", async ()
     return response.data
   });
 
+  export const addNewComment = createAsyncThunk('comments/addNewComment', async (initialAlbum: { email: string, postId: number, body: string}) => {
+    const response = await axios.post("https://jsonplaceholder.typicode.com/comments", initialAlbum)
+    return response.data
+})
+
+  export const deleteComment = createAsyncThunk('comments/deleteComment', async (id: number) => {
+    await axios.delete(`https://jsonplaceholder.typicode.com/comments/${id}`);
+    return id;
+  });
+
   const commentsSlice = createSlice({
     name: "comments",
     initialState,
-    reducers: {
-      commentAdded: (state, action) => {
-        action.payload.id = state.comments.length + 1
-        state.comments.unshift(action.payload);
-      },
-      commentRemoved: (state, action: PayloadAction<number>) => {
-        const index = state.comments.findIndex((comment) => comment.id === action.payload);
-        if (index !== -1) {
-          // Create a new array without the post at the found index
-          state.comments = [...state.comments.slice(0, index), ...state.comments.slice(index + 1)];
-        }
-      },
-    },
+    reducers: {},
     extraReducers: (builder) => {
         builder.addCase(fetchComments.fulfilled, (state, action) => {
         state.status = 'succeeded'
@@ -48,6 +46,15 @@ export const fetchComments = createAsyncThunk("comments/fetchComments", async ()
             state.status = 'failed'
             state.error = action.error.message || 'Error fetching'
         });
+        builder.addCase(addNewComment.fulfilled, (state, action) => { 
+          const newComment = action.payload;
+          newComment.id = state.comments.length + 1;
+          state.comments.unshift(newComment);
+        });
+        builder.addCase(deleteComment.fulfilled, (state, action) => {
+          const deletedCommentId = action.payload;
+          state.comments = state.comments.filter((comment) => comment.id !== deletedCommentId);
+        });
     },
   });
 
@@ -56,6 +63,6 @@ export const selectAllComments = (state: { comments: Comments }) => state.commen
 export const selectCommentById = (state: { comments: Comments }, postId: number) =>
   state.comments.comments.find(comment => comment.postId === postId);
 
-export const {commentAdded, commentRemoved} = commentsSlice.actions
+export const {} = commentsSlice.actions
 
 export default commentsSlice.reducer
