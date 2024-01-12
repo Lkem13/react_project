@@ -32,6 +32,10 @@ export const deletePost = createAsyncThunk('posts/deletePost', async (id: number
     return id;
 });
 
+export const editPost = createAsyncThunk('posts/editPost', async (data: { id: number, userId: number, body: string, title: string }) => {
+  const response = await axios.patch(`https://jsonplaceholder.typicode.com/posts/${data.id}`, { id: data.id, body: data.body ,userId: data.userId, title: data.title });
+  return response.data;
+});
 
   const postsSlice = createSlice({
     name: "posts",
@@ -66,6 +70,13 @@ export const deletePost = createAsyncThunk('posts/deletePost', async (id: number
         builder.addCase(deletePost.fulfilled, (state, action) => {
           const deletedPostId = action.payload;
           state.posts = state.posts.filter((post) => post.id !== deletedPostId);
+        });
+        builder.addCase(editPost.fulfilled, (state, action) => {
+          const editedPost = action.payload;
+          const index = state.posts.findIndex((post) => post.id === editedPost.id);
+          if (index !== -1) {
+            state.posts[index] = editedPost;
+          }
         });
     },
   });

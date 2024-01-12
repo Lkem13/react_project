@@ -30,9 +30,11 @@ const Header = () => {
                   <>
                     <Nav>
                       <Link to="albums" className="nav-link">Albums</Link>
+                      <Link to="todo" className="nav-link">ToDo</Link>
                     </Nav>
                     <Nav className="ms-auto">
-                      <button className="nav-link" onClick={handleLogout}>Logout</button>
+                      <Link to="profile" className="nav-link">Profile</Link>
+                      <button className="nav-link" onClick={handleLogout}>LOGOUT</button>
                     </Nav>
                   </>
                   ) : (

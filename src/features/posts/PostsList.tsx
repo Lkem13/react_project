@@ -30,7 +30,6 @@ const PostsList = () => {
                     <button className="delete" onClick={() => handleRemovePost(post.id)}>X</button>
                 )
             }
-            
             <h4>{user?.username}:</h4>
             <h5>{post.title}</h5>
             <p>{post.body ? post.body.substring(0, 100) : "No content available"}</p>

@@ -39,7 +39,7 @@ textarea {
   box-sizing: border-box;
 }
 
-button.submit {
+button.submit, button.change {
   background-color: black;
   color: white;
   border: none;
@@ -48,11 +48,13 @@ button.submit {
   font-size: 16px;
 }
 
-button.submit:hover {
+button.submit:hover, button.change:hover {
   background-color: #45a049;
 }
 
-.post, .comment {
+.post,
+.comment,
+.todo-item {
   position: relative;
   max-width: 600px;
   margin: 0 auto;
@@ -61,7 +63,8 @@ button.submit:hover {
   margin-bottom: 15px;
 }
 
-.post h4 {
+.post h4,
+.todo-item h5 {
   color: #333;
   margin-bottom: 5px;
 }
@@ -71,7 +74,8 @@ button.submit:hover {
   margin-bottom: 10px;
 }
 
-.post p {
+.post p,
+.todo-item p {
   color: #777;
 }
 
@@ -91,16 +95,19 @@ button.delete:hover {
   background-color: #d32f2f;
 }
 
-.post a {
+.post a,
+.todo-item h5 {
   text-decoration: none;
   color: #2196F3;
 }
 
-.post a:hover {
+.post a:hover,
+.todo-item h5:hover {
   text-decoration: underline;
 }
 
-h2 {
+h2,
+.todo-container h2 {
   margin-bottom: 10px;
   text-align: center;
 }
@@ -114,7 +121,8 @@ h2 {
   width: 60%;
 }
 
-p {
+p,
+.todo-item p {
   margin-top: 5px;
   margin-bottom: 10px;
 }
@@ -137,13 +145,14 @@ p {
 }
 
 .return {
-  background-color: #303131; 
-  color: white; 
-  padding: 10px 15px; 
-  font-size: 16px; 
-  border: none; 
-  border-radius: 5px; 
-  cursor: pointer; 
+  background-color: #303131;
+  color: white;
+  padding: 10px 15px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .return:hover {
@@ -152,4 +161,40 @@ p {
 
 article.album {
   width: 50%;
+}
+
+.error {
+  color: red;
+}
+
+.todo-container {
+  text-align: center;
+}
+
+.todo-item h5 {
+  font-size: 1rem;
+  cursor: pointer;
+  margin: 0;
+  margin-top: 1rem;
+}
+
+.todo-item {
+  margin-bottom: 10px;
+  padding: 10px 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f8f8f8;
+}
+
+h1 {
+  text-align: center;
+}
+
+.todo-item h5.completed {
+  text-decoration: line-through;
+  color: green;
+}
+
+.todo-item h5.incomplete {
+  color: red;
 }

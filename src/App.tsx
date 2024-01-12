@@ -15,12 +15,16 @@ import Albums from './Pages/Albums';
 import { fetchUsers } from './features/users/usersSlice';
 import { fetchPhotos } from './features/photos/photosSlice';
 import SelectedAlbum from './features/albums/SelectedAlbum';
+import { fetchToDos } from './features/todo/todoSlice';
+import ToDos from './Pages/ToDos';
+import MyProfile from './features/users/MyProfile';
 
 store.dispatch(fetchPosts());
 store.dispatch(fetchComments());
 store.dispatch(fetchAlbums());
 store.dispatch(fetchUsers());
 store.dispatch(fetchPhotos());
+store.dispatch(fetchToDos());
 
 function App() {
 
@@ -40,6 +44,12 @@ function App() {
           <Route index element={<Albums />} />
           <Route path=":albumId" element={<SelectedAlbum />} />
         </Route>
+
+        <Route path="todo">
+          <Route index element={<ToDos />} />
+        </Route>
+
+        <Route path="profile" element={<MyProfile/>}/>
 
         <Route path="signup" element={<Signup/>}/>
 

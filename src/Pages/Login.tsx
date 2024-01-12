@@ -37,7 +37,6 @@ const Login = () => {
 
   return (
     <section>
-            <br/>
             <h2>Login</h2>
             <form>
                 <label htmlFor="email">Email address:</label>
@@ -47,6 +46,7 @@ const Login = () => {
                     name="email"
                     value={email}
                     onChange={onEmailChanged}/>
+                <div className='error'>{loginState && 'Email was not found!'}</div>
                 <button className="submit" type="button" onClick={handleLogin}>Login</button>
             </form>
             <br/>
