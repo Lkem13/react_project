@@ -18,6 +18,7 @@ import SelectedAlbum from './features/albums/SelectedAlbum';
 import { fetchToDos } from './features/todo/todoSlice';
 import ToDos from './Pages/ToDos';
 import MyProfile from './features/users/MyProfile';
+import SelectedUser from './features/users/SelectedUser';
 
 store.dispatch(fetchPosts());
 store.dispatch(fetchComments());
@@ -50,6 +51,10 @@ function App() {
         </Route>
 
         <Route path="profile" element={<MyProfile/>}/>
+
+        <Route path="users">
+          <Route path=":userId" element={<SelectedUser />} />
+        </Route>
 
         <Route path="signup" element={<Signup/>}/>
 

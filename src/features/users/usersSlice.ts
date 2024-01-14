@@ -48,7 +48,6 @@ export const fetchUsers = createAsyncThunk("users/fetchUsers", async () => {
 
 export const selectUserById = (users: UsersModel[], userId: number) =>
   users.find((user) => user.id === userId);
-
   
 export const selectAllUsers = (state: { users: Users }) => state.users.users;
 
